@@ -47,9 +47,23 @@ if ($xml === false) {
 // Determine item name (singular) by removing final 's' (very basic rule)
 $rootName = $xml->getName();
 $itemName = rtrim($rootName, 's');
-$item = $xml->addChild($itemName);
+$editId = isset($_POST['id']) ? intval($_POST['id']) : 0;
+$item = null;
+// If editing, find existing item
+if ($editId > 0) {
+    foreach ($xml->{$itemName} as $child) {
+        if (isset($child->id) && intval($child->id) === $editId) {
+            $item = $child;
+            break;
+        }
+    }
+}
+// If not editing or not found, create new
+if ($item === null) {
+    $item = $xml->addChild($itemName);
+}
 
-// Add an id field by computing max id
+// Add an id field by computing max id only if creating new
 $maxId = 0;
 foreach ($xml->{$itemName} as $child) {
     if (isset($child->id)) {
@@ -58,7 +72,16 @@ foreach ($xml->{$itemName} as $child) {
     }
 }
 $newId = $maxId + 1;
-$item->addChild('id', $newId);
+if ($editId > 0) {
+    // ensure ID exists
+    $existingId = isset($item->id) ? intval($item->id) : 0;
+    if (!$existingId) {
+        $item->addChild('id', $editId);
+    }
+    $newId = isset($item->id) ? intval($item->id) : $editId;
+} else {
+    $item->addChild('id', $newId);
+}
 
 // Now add other POST parameters
 foreach ($_POST as $key => $value) {
@@ -76,6 +99,10 @@ foreach ($_POST as $key => $value) {
         }
     }
     // add child
+    // If we're editing, remove any existing child with the same key to replace value
+    if ($editId > 0 && isset($item->{$k})) {
+        unset($item->{$k}[0]);
+    }
     $item->addChild($k, htmlspecialchars($value));
 }
 
@@ -86,6 +113,7 @@ $dom->formatOutput = true;
 $dom->loadXML($xml->asXML());
 $dom->save($path);
 
-echo json_encode(['success' => true, 'id' => $newId, 'message' => 'Saved']);
+$msg = ($editId > 0) ? 'Updated' : 'Saved';
+echo json_encode(['success' => true, 'id' => $newId, 'message' => $msg]);
 
 ?>

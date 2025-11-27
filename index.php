@@ -226,11 +226,11 @@
             <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
                 <h3 class="font-montserrat font-bold text-xl mb-4">Add New Note</h3>
                 <form id="noteForm" class="space-y-4">
-                    <input type="text" name="title" placeholder="Note Title" class="w-full border p-2 rounded focus:ring-2 focus:ring-green-400 outline-none" required>
-                    <textarea name="content" placeholder="Write your note here..." rows="3" class="w-full border p-2 rounded focus:ring-2 focus:ring-green-400 outline-none" required></textarea>
+                    <input type="text" name="title" placeholder="Note Title" class="form-control" required>
+                    <textarea name="content" placeholder="Write your note here..." rows="3" class="form-control" required></textarea>
                     <div class="flex justify-end gap-2">
                         <button type="button" onclick="closeModal('noteModal')" class="text-gray-500 hover:text-gray-700 px-4 py-2">Cancel</button>
-                        <button type="submit" class="bg-farm-dark text-white px-4 py-2 rounded hover:bg-green-800">Save to XML</button>
+                        <button type="submit" class="btn">Save to XML</button>
                     </div>
                 </form>
             </div>

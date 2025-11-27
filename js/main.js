@@ -249,6 +249,62 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
     });
   }
 
+  // --- 5. Admin Manage Edit/Delete logic ---
+  function openEditModal(file, id) {
+    const modal = document.getElementById('editModal');
+    const form = document.getElementById('editForm');
+    if (!modal || !form) return;
+    // load data for this file
+    fetch(`php/load-data.php?file=${file}`)
+      .then(r => r.json())
+      .then(data => {
+        // find item by id
+        const rootKey = Object.keys(data)[0];
+        let items = data[rootKey] || [];
+        if (!Array.isArray(items)) items = [items];
+        const item = items.find(it => String(it.id) === String(id));
+        if (!item) { alert('Item not found'); return; }
+        // populate form fields
+        form.file.value = file;
+        form.id.value = id;
+        for (const key of form.elements) {
+          if (!key.name) continue;
+          if (key.name === 'file' || key.name === 'id') continue;
+          if (item[key.name] !== undefined) key.value = item[key.name];
+        }
+        modal.classList.remove('hidden');
+      }).catch(err => { console.error(err); alert('Failed to load item'); });
+  }
+
+  function deleteEntity(file, id) {
+    if (!confirm('Delete this entry? This cannot be undone.')) return;
+    const fd = new FormData(); fd.append('file', file); fd.append('id', id);
+    fetch('php/delete-entity.php', { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(r => r.json())
+      .then(data => { if (data && data.success) { location.reload(); } else alert(data.error || 'Delete failed'); })
+      .catch(err => { console.error(err); alert('Delete request failed'); });
+  }
+
+  function initManageEdit() {
+    const editForm = document.getElementById('editForm');
+    if (!editForm) return;
+    editForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      fetch('php/save-entity.php', { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(r => r.json())
+        .then(data => {
+          if (data && data.success) {
+            alert('Saved.');
+            closeModal('editModal');
+            location.reload();
+          } else {
+            alert('Save failed: ' + (data.error || data.message || 'Unknown'));
+          }
+        }).catch(err => { console.error(err); alert('Save failed.'); });
+    });
+  }
+
   function loadNotes() {
     fetch('php/load-data.php?file=notes')
       .then(res => res.json())
@@ -379,6 +435,7 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
     initAiInput();
     initNoteForm();
     initAuthForms();
+    initManageEdit();
     // Update Add Note button based on auth state
     fetch('php/whoami.php', { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
       .then(res => res.json())
@@ -394,6 +451,16 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
     if (draftBtn) draftBtn.addEventListener('click', generateAiNewsletter);
     // load any existing notes
     loadNotes();
+    // Apply admin theme from localStorage
+    try {
+      const t = localStorage.getItem('adminTheme');
+      if (t === 'dark') document.documentElement.classList.add('admin-theme-dark');
+      // Add window function
+      window.toggleAdminTheme = function () {
+        const isDark = document.documentElement.classList.toggle('admin-theme-dark');
+        localStorage.setItem('adminTheme', isDark ? 'dark' : 'light');
+      };
+    } catch (e) { }
   });
 
 })();

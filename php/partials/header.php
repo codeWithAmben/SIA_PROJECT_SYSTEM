@@ -27,6 +27,9 @@ $isAdmin = isset($_SESSION['admin_logged']) && $_SESSION['admin_logged'] === tru
                 <?php if ($userName): ?>
                     <span class="hidden sm:inline-block text-sm text-gray-600">Signed in as <strong class="text-farm-dark"><?= $userName ?></strong></span>
                     <a href="<?= $pathPrefix ?>php/logout.php" class="text-sm text-red-500 hover:text-red-700">Logout</a>
+                    <?php if ($isAdmin): ?>
+                        <button id="themeToggle" onclick="toggleAdminTheme()" class="ml-3 px-2 py-1 border rounded text-sm bg-white/20 hover:bg-white/30">Theme</button>
+                    <?php endif; ?>
                 <?php else: ?>
                     <?php if ($isIndex): ?>
                         <button onclick="openAuthModal(); return false;" class="flex items-center gap-2 bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-full shadow-sm hover:bg-gray-50 hover:shadow-md transition font-medium text-sm">
