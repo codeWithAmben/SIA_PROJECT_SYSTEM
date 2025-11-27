@@ -2,9 +2,14 @@
 // php/register.php
 // Basic registration endpoint: POST name, email, password, role (optional)
 session_start();
+require_once __DIR__ . '/csrf.php';
 header('Content-Type: application/json; charset=utf-8');
 $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 $return = isset($_POST['return']) ? $_POST['return'] : '../index.php';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !csrf_verify_request()) {
+    if ($isAjax) { http_response_code(403); echo json_encode(['error' => 'Invalid CSRF token']); exit; }
+    $_SESSION['flash'] = 'Invalid request (CSRF token mismatch)'; header('Location: ' . $return); exit;
+}
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
@@ -24,6 +29,20 @@ if (!$name || !$email || !$password) {
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     if ($isAjax) { http_response_code(400); echo json_encode(['error' => 'Invalid email address']); exit; }
     $_SESSION['flash'] = 'Invalid email address'; header('Location: ' . $return); exit;
+}
+
+// Validate password strength (basic)
+// Limit lengths
+$name = substr($name, 0, 200);
+$email = substr($email, 0, 200);
+$password = substr($password, 0, 1024);
+if (strlen($password) < 6) {
+    if ($isAjax) { http_response_code(400); echo json_encode(['error' => 'Password too short']); exit; }
+    $_SESSION['flash'] = 'Password must be at least 6 characters long'; header('Location: ' . $return); exit;
+}
+if (strlen($name) < 2) {
+    if ($isAjax) { http_response_code(400); echo json_encode(['error' => 'Invalid name']); exit; }
+    $_SESSION['flash'] = 'Name must be at least 2 characters long'; header('Location: ' . $return); exit;
 }
 
 $path = __DIR__ . '/../data/users.xml';

@@ -1,6 +1,6 @@
 <?php
 // Simple auth helpers
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 
 function is_admin_logged_in() {
     return isset($_SESSION['admin_logged']) && $_SESSION['admin_logged'] === true;

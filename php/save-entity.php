@@ -2,8 +2,16 @@
 // Script: php/save-entity.php
 // Usage: POST file=notes|animals|... and fields as POST params
 
-$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
-session_start();
+ $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+if (session_status() === PHP_SESSION_NONE) session_start();
+// where to redirect if not AJAX
+$return = isset($_POST['return']) ? $_POST['return'] : '../index.php';
+require_once __DIR__ . '/csrf.php';
+// CSRF check for POST requests
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !csrf_verify_request()) {
+    if ($isAjax) { http_response_code(403); echo json_encode(['error' => 'Invalid CSRF token']); exit; }
+    $_SESSION['flash'] = 'Invalid request (CSRF token mismatch)'; header('Location: ../index.php'); exit;
+}
 header('Content-Type: application/json; charset=utf-8');
 $allowed = ['animals','crops','users','tasks','notes'];
 $file = isset($_POST['file']) ? preg_replace('/[^a-z]/', '', $_POST['file']) : '';
@@ -83,6 +91,19 @@ if ($editId > 0) {
     $item->addChild('id', $newId);
 }
 
+// Basic input validation: max length limits for common fields
+function sanitize_value($val) {
+    $v = trim($val);
+    if (strlen($v) > 4096) $v = substr($v,0,4096);
+    return $v;
+}
+
+function abort_with_error($message, $code = 400) {
+    global $isAjax, $return;
+    if ($isAjax) { http_response_code($code); echo json_encode(['error' => $message]); exit; }
+    $_SESSION['flash'] = $message; header('Location: ' . ($return ?? '../index.php')); exit;
+}
+
 // Now add other POST parameters
 foreach ($_POST as $key => $value) {
     if (in_array($key, ['file'])) continue;
@@ -98,12 +119,25 @@ foreach ($_POST as $key => $value) {
             $value = password_hash($value, PASSWORD_DEFAULT);
         }
     }
+    // Basic validations per file/field
+    if ($file === 'users' && $k === 'email') {
+        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) abort_with_error('Invalid email address');
+    }
+    if ($file === 'animals' && $k === 'age') {
+        if (!is_numeric($value)) abort_with_error('Age must be a number');
+    }
+    if ($file === 'crops' && $k === 'yield') {
+        if (!is_numeric($value)) abort_with_error('Yield must be a number');
+    }
+
     // add child
     // If we're editing, remove any existing child with the same key to replace value
     if ($editId > 0 && isset($item->{$k})) {
         unset($item->{$k}[0]);
     }
-    $item->addChild($k, htmlspecialchars($value));
+    // sanitize values to avoid untrusted HTML
+    $value = sanitize_value($value);
+    $item->addChild($k, htmlspecialchars($value, ENT_QUOTES, 'UTF-8'));
 }
 
 // Save XML back

@@ -1,4 +1,5 @@
 <?php session_start(); ?>
+<?php require_once __DIR__ . '/php/csrf.php'; ?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -11,40 +12,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        montserrat: ['Montserrat', 'sans-serif'],
-                        poppins: ['Poppins', 'sans-serif'],
-                    },
-                    colors: {
-                        farm: {
-                            green: '#4ade80',
-                            dark: '#14532d',
-                            earth: '#78350f',
-                            light: '#f0fdf4'
-                        }
-                    },
-                    animation: {
-                        'bounce-slight': 'bounce 3s infinite',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+    <?php include __DIR__ . '/php/partials/head.php'; ?>
     <!-- Markdown Parser for AI Responses -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="font-poppins bg-farm-light/90 text-gray-800">
     <!-- flash messages moved into header partial -->
@@ -226,6 +196,7 @@
             <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
                 <h3 class="font-montserrat font-bold text-xl mb-4">Add New Note</h3>
                 <form id="noteForm" class="space-y-4">
+                    <?php echo csrf_field(); ?>
                     <input type="text" name="title" placeholder="Note Title" class="form-control" required>
                     <textarea name="content" placeholder="Write your note here..." rows="3" class="form-control" required></textarea>
                     <div class="flex justify-end gap-2">
@@ -255,6 +226,7 @@
 
                 <!-- Login Form -->
                 <form id="loginForm" class="space-y-4" method="post" action="php/user-login.php">
+                    <?php echo csrf_field(); ?>
                     <input type="hidden" name="return" value="../index.php">
                     <h3 class="font-montserrat font-bold text-xl text-center mb-2">Welcome Back</h3>
                     <input type="text" name="email" placeholder="Email or Username" class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-green-400 outline-none" required>
@@ -275,6 +247,7 @@
 
                 <!-- Register Form (Hidden by default) -->
                 <form id="registerForm" class="space-y-4 hidden" method="post" action="php/register.php">
+                    <?php echo csrf_field(); ?>
                     <input type="hidden" name="return" value="../index.php">
                     <h3 class="font-montserrat font-bold text-xl text-center mb-2">Join GreenAcres</h3>
                     <input type="text" name="name" placeholder="Full Name" class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-green-400 outline-none" required>

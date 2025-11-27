@@ -28,24 +28,7 @@ $fields = $fieldsByFile[$file] ?? ['name'=>'Name'];
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Manage <?=htmlspecialchars(ucfirst($file))?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              montserrat: ['Montserrat','sans-serif'],
-              poppins: ['Poppins','sans-serif'],
-            },
-            colors: {
-              farm: { green: '#4ade80', dark: '#14532d', earth: '#78350f', light: '#f0fdf4' }
-            }
-          }
-        }
-      }
-    </script>
-    <!-- Google Fonts (local fallback: also included in CSS as font utility classes) -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <?php include __DIR__ . '/../php/partials/head.php'; ?>
   <link rel="stylesheet" href="../css/style.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <!-- Moved font family and container rules to css/style.css for consistency -->
@@ -110,6 +93,7 @@ $fields = $fieldsByFile[$file] ?? ['name'=>'Name'];
         <div class="card-inner">
           <h3 class="font-bold mb-3">Edit Item</h3>
           <form id="editForm" class="space-y-4">
+            <?php require_once __DIR__ . '/../php/csrf.php'; echo csrf_field(); ?>
             <input type="hidden" name="file" value="<?=htmlspecialchars($file)?>">
             <input type="hidden" name="id" value="">
             <?php foreach ($fields as $k=>$label): ?>
@@ -136,6 +120,7 @@ $fields = $fieldsByFile[$file] ?? ['name'=>'Name'];
   <section>
     <h2 class="mt-4 mb-3">Add new <?=htmlspecialchars(rtrim(ucfirst($file),'s'))?></h2>
     <form method="post" action="../php/save-entity.php" class="space-y-4">
+      <?php require_once __DIR__ . '/../php/csrf.php'; echo csrf_field(); ?>
       <input type="hidden" name="file" value="<?=htmlspecialchars($file)?>">
       <?php foreach ($fields as $k=>$label): ?>
         <div class="form-row">

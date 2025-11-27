@@ -1,6 +1,11 @@
 <?php
 // php/delete-entity.php - deletes an entity by file and id (admin-only)
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
+require_once __DIR__ . '/csrf.php';
+// CSRF check
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !csrf_verify_request()) {
+    http_response_code(403); echo json_encode(['error' => 'Invalid CSRF token']); exit;
+}
 header('Content-Type: application/json; charset=utf-8');
 $allowed = ['animals','crops','users','tasks','notes'];
 $file = isset($_POST['file']) ? preg_replace('/[^a-z]/', '', $_POST['file']) : '';

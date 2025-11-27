@@ -7,23 +7,7 @@ $datasets = ['animals','crops','users','tasks','notes'];
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Admin — Simple Farm</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            montserrat: ['Montserrat','sans-serif'],
-            poppins: ['Poppins','sans-serif'],
-          },
-          colors: { farm: { green: '#4ade80', dark: '#14532d', earth: '#78350f', light: '#f0fdf4' } }
-        }
-      }
-    }
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/style.css">
-  <!-- Fonts are included above and the local CSS (`css/style.css`) provides fallbacks -->
+  <?php include __DIR__ . '/../php/partials/head.php'; ?>
 </head>
 <body class="bg-farm-light/95 min-h-screen">
   <?php include __DIR__ . '/../php/auth.php'; require_admin(); ?>

@@ -1,7 +1,15 @@
 <?php
 // php/user-login.php -- simple user login (non-admin)
 session_start();
+require_once __DIR__ . '/csrf.php';
 header('Content-Type: application/json; charset=utf-8');
+// Prepare AJAX detection and return before csrf check
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+$return = isset($_POST['return']) ? $_POST['return'] : '../index.php';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !csrf_verify_request()) {
+    if ($isAjax) { http_response_code(403); echo json_encode(['error' => 'Invalid CSRF token']); exit; }
+    $_SESSION['flash'] = 'Invalid request (CSRF token mismatch)'; header('Location: ' . $return); exit;
+}
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
@@ -12,6 +20,14 @@ $identifier = '';
 if (isset($_POST['email'])) $identifier = trim($_POST['email']);
 elseif (isset($_POST['username'])) $identifier = trim($_POST['username']);
 $password = isset($_POST['password']) ? $_POST['password'] : '';
+
+// Basic sanitization and length checks
+$identifier = substr($identifier, 0, 250);
+$password = substr($password, 0, 1024);
+if (strlen($password) < 6 || strlen($identifier) < 2) {
+    if ($isAjax) { http_response_code(400); echo json_encode(['error' => 'Missing or invalid credentials']); exit; }
+    $_SESSION['flash'] = 'Invalid credentials'; header('Location: ' . $return); exit;
+}
 
 if (!$identifier || !$password) {
     http_response_code(400);
@@ -87,6 +103,7 @@ if ($isAdminLogin) {
         $return = isset($_POST['return']) ? $_POST['return'] : '../pages/admin.php';
         // If admin logged in via index form which set return to index, redirect to admin dashboard
         if (!$isAjax && $return === '../index.php') $return = '../pages/admin.php';
+        session_regenerate_id(true);
         if ($isAjax) {
             echo json_encode(['success' => true, 'message' => 'Admin logged in', 'user' => $_SESSION['user']]);
             exit;
@@ -128,6 +145,7 @@ foreach ($xml->user as $u) {
                 echo json_encode(['success' => true, 'message' => 'Logged in', 'user' => $_SESSION['user']]);
                 exit;
             } else {
+                session_regenerate_id(true);
                 $_SESSION['flash'] = 'Welcome, ' . $_SESSION['user']['name'] . '! You are logged in.';
                 header('Location: ' . $return);
                 exit;

@@ -215,6 +215,8 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
     noteForm.addEventListener('submit', function(e) {
       e.preventDefault();
       const formData = new FormData(this);
+      // Attach CSRF token if available in global
+      try { if (window.CSRF_TOKEN) formData.append('csrf_token', window.CSRF_TOKEN); } catch(e){}
       fetch('php/save-note.php', { method: 'POST', body: formData })
       .then(response => {
         if (!response.ok) {
@@ -279,6 +281,7 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
   function deleteEntity(file, id) {
     if (!confirm('Delete this entry? This cannot be undone.')) return;
     const fd = new FormData(); fd.append('file', file); fd.append('id', id);
+    try { if (window.CSRF_TOKEN) fd.append('csrf_token', window.CSRF_TOKEN); } catch(e){}
     fetch('php/delete-entity.php', { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
       .then(r => r.json())
       .then(data => { if (data && data.success) { location.reload(); } else alert(data.error || 'Delete failed'); })
@@ -291,6 +294,7 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
     editForm.addEventListener('submit', function (e) {
       e.preventDefault();
       const formData = new FormData(this);
+      try { if (window.CSRF_TOKEN) formData.append('csrf_token', window.CSRF_TOKEN); } catch(e){}
       fetch('php/save-entity.php', { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
         .then(r => r.json())
         .then(data => {
@@ -359,6 +363,7 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
       loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const formData = new FormData(loginForm);
+        try { if (window.CSRF_TOKEN) formData.append('csrf_token', window.CSRF_TOKEN); } catch(e){}
         const btn = loginForm.querySelector('button[type="submit"]');
         if (btn) { btn.disabled = true; btn.innerText = 'Signing in...'; }
         fetch('php/user-login.php', { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
@@ -396,6 +401,7 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
       registerForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const formData = new FormData(registerForm);
+        try { if (window.CSRF_TOKEN) formData.append('csrf_token', window.CSRF_TOKEN); } catch(e){}
         // Add role default
         if (!formData.get('role')) formData.set('role', 'User');
         const btn = registerForm.querySelector('button[type="submit"]');
