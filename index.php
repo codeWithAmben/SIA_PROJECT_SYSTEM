@@ -46,7 +46,7 @@
         <div class="">
             <div class="text-center mb-12">
                 <h2 class="font-montserrat font-bold text-3xl text-farm-dark">Interactive Farm Map</h2>
-                <p class="text-gray-600 mt-2">Click on the Barn, Field, House, or Pond to view XML data.</p>
+                <p class="text-gray-600 mt-2">Click on the Barn, Field, House, or Pond to view data.</p>
             </div>
 
             <div class="map-container relative mx-auto">
@@ -71,9 +71,7 @@
                     <div class="flex items-center gap-2"><div class="w-3 h-3 bg-green-400 rounded-full"></div> Bottom-Left: Crops</div>
                     <div class="flex items-center gap-2"><div class="w-3 h-3 bg-yellow-400 rounded-full"></div> Bottom-Right: Tasks</div>
                 </div>
-                <div class="hidden md:flex items-center ml-4">
-                    <a href="pages/admin.php" class="text-sm text-gray-600 hover:text-farm-dark">Admin</a>
-                </div>
+                
             </div>
         </div>
     </section>
@@ -84,7 +82,7 @@
             <div class="flex flex-col md:flex-row justify-between items-end mb-8 border-b pb-4 border-gray-200 gap-4">
                 <div>
                     <h2 class="font-montserrat font-bold text-3xl text-farm-dark">Daily Note Log</h2>
-                    <p class="text-gray-500">Recent entries from <code class="text-sm bg-gray-200 px-1 rounded">notes.xml</code></p>
+                    <p class="text-gray-500">Recent entries from <code class="text-sm bg-gray-200 px-1 rounded">notes</code></p>
                 </div>
                 <div class="flex gap-2">
                     <button onclick="openNoteModal()" id="btnAddNote" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm font-medium transition shadow-sm">
