@@ -25,4 +25,11 @@
     <role>User</role>
     <password>$2y$10$bWHL5/5VlK.gnJfqlas/Tu2KNhM2ZM8S4bpcXWmO40K7cnpF9Blw.</password>
   </user>
+  <user>
+    <id>5</id>
+    <name>Test</name>
+    <email>customer@example.com</email>
+    <role>User</role>
+    <password>$2y$10$GpyVj.OJVMY2xrMYhz1P0eCTGJ9.OBt3bZNJ7a5KHNqLFK89TYjce</password>
+  </user>
 </users>

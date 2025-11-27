@@ -2,13 +2,30 @@
 // Script: php/save-entity.php
 // Usage: POST file=notes|animals|... and fields as POST params
 
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+session_start();
 header('Content-Type: application/json; charset=utf-8');
 $allowed = ['animals','crops','users','tasks','notes'];
 $file = isset($_POST['file']) ? preg_replace('/[^a-z]/', '', $_POST['file']) : '';
+// Authorization: notes can be saved by a logged user or admin; other datasets need admin.
 if (!$file || !in_array($file, $allowed)) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid file parameter']);
     exit;
+}
+
+// Authorization checks before writing
+if ($file === 'notes') {
+    if (!isset($_SESSION['user']) && !isset($_SESSION['admin_logged'])) {
+        if ($isAjax) { http_response_code(401); echo json_encode(['error' => 'Unauthorized']); exit; }
+        $_SESSION['flash'] = 'Please sign in to add notes'; header('Location: ../index.php?auth=1'); exit;
+    }
+} else {
+    // other files require admin
+    if (!isset($_SESSION['admin_logged']) || $_SESSION['admin_logged'] !== true) {
+        if ($isAjax) { http_response_code(403); echo json_encode(['error' => 'Admin-only endpoint']); exit; }
+        $_SESSION['flash'] = 'Admin access required'; header('Location: ../index.php?auth=1'); exit;
+    }
 }
 
 $path = __DIR__ . '/../data/' . $file . '.xml';

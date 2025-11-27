@@ -35,6 +35,7 @@ $fields = $fieldsByFile[$file] ?? ['name'=>'Name'];
 </head>
 <body>
 <?php include __DIR__ . '/../php/auth.php'; require_admin(); ?>
+<?php include __DIR__ . '/../php/partials/header.php'; ?>
 <div class="container mx-auto px-4">
   <div class="flex items-center justify-between mb-6">
     <a href="../index.php" class="text-sm text-gray-600 hover:text-gray-800">← Back to home</a>
@@ -92,5 +93,7 @@ $fields = $fieldsByFile[$file] ?? ['name'=>'Name'];
   </section>
 
 </div>
+</div>
+<?php include __DIR__ . '/../php/partials/footer.php'; ?>
 </body>
 </html>

@@ -191,7 +191,23 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
     if (el) el.classList.add('hidden');
   }
 
-  function openNoteModal() { const el = document.getElementById('noteModal'); if (el) el.classList.remove('hidden'); }
+  function openNoteModal() {
+    // Check auth state before showing the modal
+    fetch('php/whoami.php', { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
+      .then(res => res.json())
+      .then(data => {
+        if (data && (data.user || data.admin)) {
+          const el = document.getElementById('noteModal'); if (el) el.classList.remove('hidden');
+        } else {
+          // not signed in - open auth modal; set a post-login action to reopen the note modal
+          try { sessionStorage.setItem('postLoginAction', 'openNote'); } catch(e){}
+          openAuthModal();
+        }
+      }).catch(err => {
+        console.error('whoami check failed', err);
+        openAuthModal();
+      });
+  }
 
   function initNoteForm() {
     const noteForm = document.getElementById('noteForm');
@@ -200,13 +216,36 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
       e.preventDefault();
       const formData = new FormData(this);
       fetch('php/save-note.php', { method: 'POST', body: formData })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => { throw { status: response.status, err: err }; });
+        }
+        return response.json();
+      })
       .then(data => {
-        alert(data.message || "Note saved!");
-        closeModal('noteModal');
-        this.reset();
-        loadNotes(); 
-      }).catch(()=>{ alert('Could not save note.'); });
+        if (data && data.success) {
+          alert(data.message || "Note saved!");
+          closeModal('noteModal');
+          this.reset();
+          loadNotes();
+        } else if (data && data.error) {
+          if (data.error.toLowerCase().includes('unauthorized')) {
+            // show login modal
+            openAuthModal();
+          }
+          alert(data.error || 'Could not save note.');
+        } else {
+          alert('Note could not be saved.');
+        }
+        
+      }).catch((e)=>{ 
+        if (e && e.err && e.err.error && (e.status === 401 || e.status === 403)) {
+          openAuthModal();
+          alert(e.err.error);
+        } else {
+          alert('Could not save note.');
+        }
+      });
     });
   }
 
@@ -221,7 +260,8 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
         notes.forEach(note => {
           const colors = ['border-green-500', 'border-yellow-500', 'border-blue-500'];
           const color = colors[Math.floor(Math.random() * colors.length)];
-          html += `\n                        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 ${color}">\n                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Note</span>\n                            <h3 class="font-montserrat font-bold text-lg mt-1 mb-2">${note.title}</h3>\n                            <p class="text-gray-600 text-sm">${note.content}</p>\n                        </div>`;
+          const author = note.author || note.name || '';
+          html += `\n                        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 ${color}">\n                            <div class="flex justify-between items-start">\n                              <div>\n                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Note</span>\n                                <h3 class="font-montserrat font-bold text-lg mt-1 mb-2">${note.title}</h3>\n                                <p class="text-gray-600 text-sm">${note.content}</p>\n                              </div>\n                              <div class="text-xs text-gray-400">${author ? 'By ' + author : ''}</div>\n                            </div>\n                        </div>`;
         });
         if(notes.length > 0 && container) container.innerHTML = html;
       })
@@ -272,6 +312,14 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
               alert('Welcome ' + (data.user ? data.user.name : 'User') + '! Logged in.');
               loginForm.reset();
               closeModal('authModal');
+              // if we stored a post login action, run it
+              try {
+                const post = sessionStorage.getItem('postLoginAction');
+                if (post === 'openNote') {
+                  sessionStorage.removeItem('postLoginAction');
+                  openNoteModal();
+                }
+              } catch (e) { /* ignore */ }
               // If admin account, redirect to admin dashboard
               if (data.user && data.user.role && data.user.role.toLowerCase() === 'admin') {
                 window.location.href = 'pages/admin.php';
@@ -331,6 +379,16 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
     initAiInput();
     initNoteForm();
     initAuthForms();
+    // Update Add Note button based on auth state
+    fetch('php/whoami.php', { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
+      .then(res => res.json())
+      .then(data => {
+        const btn = document.getElementById('btnAddNote');
+        if (btn && !(data && (data.user || data.admin))) {
+          btn.classList.add('opacity-60');
+          btn.title = 'Sign in to add a note';
+        }
+      }).catch(()=>{});
     // Set up newsletter button
     const draftBtn = document.getElementById('btnGenerateNews');
     if (draftBtn) draftBtn.addEventListener('click', generateAiNewsletter);

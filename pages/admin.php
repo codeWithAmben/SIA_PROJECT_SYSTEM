@@ -12,21 +12,8 @@ $datasets = ['animals','crops','users','tasks','notes'];
   <style>body{font-family:Poppins,Inter,system-ui,Arial}</style>
 </head>
 <body class="bg-farm-light/95 min-h-screen">
-  <nav class="bg-white/90 backdrop-blur-md shadow-sm fixed w-full z-40">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <i class="fa-solid fa-tractor text-farm-dark text-2xl"></i>
-        <a href="../index.php" class="font-montserrat font-bold text-lg text-farm-dark">GreenAcres</a>
-      </div>
-      <div>
-        <a href="manage.php?file=notes" class="text-sm text-gray-700 hover:text-farm-dark mr-4">Notes</a>
-        <a href="manage.php?file=animals" class="text-sm text-gray-700 hover:text-farm-dark mr-4">Animals</a>
-        <a href="manage.php?file=users" class="text-sm text-gray-700 hover:text-farm-dark">Users</a>
-      </div>
-    </div>
-  </nav>
-
   <?php include __DIR__ . '/../php/auth.php'; require_admin(); ?>
+  <?php include __DIR__ . '/../php/partials/header.php'; ?>
   <main class="max-w-4xl mx-auto mt-24 px-4">
     <div class="bg-white rounded-xl shadow p-6">
       <div class="flex items-center justify-between mb-4">
@@ -58,5 +45,6 @@ $datasets = ['animals','crops','users','tasks','notes'];
       </div>
     </div>
   </main>
+  <?php include __DIR__ . '/../php/partials/footer.php'; ?>
 </body>
 </html>

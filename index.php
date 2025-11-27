@@ -47,36 +47,10 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="font-poppins bg-farm-light/90 text-gray-800">
-    <?php if (isset($_SESSION['flash'])): ?>
-        <div class="fixed top-6 left-1/2 -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded shadow z-50">
-            <?=htmlspecialchars($_SESSION['flash']); unset($_SESSION['flash']); ?>
-        </div>
-    <?php endif; ?>
+    <!-- flash messages moved into header partial -->
 
     <!-- Navigation -->
-    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex-shrink-0 flex items-center gap-2">
-                    <i class="fa-solid fa-tractor text-farm-dark text-2xl"></i>
-                    <span class="font-montserrat font-bold text-xl text-farm-dark">GreenAcres</span>
-                </div>
-                    <div class="hidden md:flex space-x-8">
-                    <a href="#home" class="text-gray-600 hover:text-farm-dark font-medium transition">Home</a>
-                    <a href="#map" class="text-gray-600 hover:text-farm-dark font-medium transition">Farm Map</a>
-                    <a href="#notes" class="text-gray-600 hover:text-farm-dark font-medium transition">Notes</a>
-                    <button onclick="toggleAiChat()" class="text-blue-600 hover:text-blue-800 font-bold transition flex items-center gap-1">
-                        <i class="fa-solid fa-sparkles"></i> AI Assistant
-                    </button>
-                </div>
-                <!-- Login Button (Opens Modal) -->
-                    <button onclick="openAuthModal()" class="flex items-center gap-2 bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-full shadow-sm hover:bg-gray-50 hover:shadow-md transition font-medium text-sm">
-                    <i class="fa-solid fa-user-circle text-gray-400"></i>
-                    Login / Register
-                </button>
-            </div>
-        </div>
-    </nav>
+    <?php include __DIR__ . '/php/partials/header.php'; ?>
 
     <!-- Hero Section -->
     <section id="home" class="pt-32 pb-20 px-4 bg-white/80 backdrop-blur-sm">
@@ -143,7 +117,7 @@
                     <p class="text-gray-500">Recent entries from <code class="text-sm bg-gray-200 px-1 rounded">notes.xml</code></p>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="openNoteModal()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm font-medium transition shadow-sm">
+                    <button onclick="openNoteModal()" id="btnAddNote" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm font-medium transition shadow-sm">
                         <i class="fa-solid fa-plus mr-1"></i> Add Note
                     </button>
                 </div>
@@ -188,14 +162,7 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900/90 text-gray-400 py-12 text-center backdrop-blur-sm">
-        <div class="flex justify-center gap-6 mb-8">
-            <a href="#" class="hover:text-white transition"><i class="fa-brands fa-twitter text-xl"></i></a>
-            <a href="#" class="hover:text-white transition"><i class="fa-brands fa-facebook text-xl"></i></a>
-        </div>
-        <p class="font-poppins text-sm">&copy; 2025 Simple Farm System. PHP, XML & Gemini API.</p>
-    </footer>
+    <?php include __DIR__ . '/php/partials/footer.php'; ?>
 
     <!-- --- MODALS --- -->
 
