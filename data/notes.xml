@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<notes>
+  <note>
+    <id>1</id>
+    <title>Soil Sample</title>
+    <content>Ph level is good in trench 4.</content>
+    <time>2025-11-24 10:00</time>
+  </note>
+  <note>
+    <id>2</id>
+    <title>New Birds</title>
+    <content>Added 6 new laying hens — health check passed.</content>
+    <time>2025-11-25 16:35</time>
+  </note>
+  <note>
+    <id>3</id>
+    <title>test</title>
+    <content>test&#13;
+</content>
+  </note>
+</notes>

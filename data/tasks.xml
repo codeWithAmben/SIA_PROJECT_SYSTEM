@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tasks>
+  <task>
+    <id>1</id>
+    <title>Prepare Soil</title>
+    <due>2025-12-01</due>
+    <assigned_to>Sam Farmer</assigned_to>
+  </task>
+  <task>
+    <id>2</id>
+    <title>Water Tomatoes</title>
+    <due>2025-12-03</due>
+    <assigned_to>Ada Helper</assigned_to>
+  </task>
+</tasks>

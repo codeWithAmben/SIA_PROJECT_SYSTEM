@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<users>
+  <user>
+    <id>1</id>
+    <name>Sam Farmer</name>
+    <role>Owner</role>
+    <email>sam@greenacres.local</email>
+  </user>
+  <user>
+    <id>2</id>
+    <name>Ada Helper</name>
+    <role>Worker</role>
+    <email>ada@greenacres.local</email>
+  </user>
+  <user>
+    <id>3</id>
+    <name>Admin User</name>
+    <role>Admin</role>
+    <email>admin@greenacres.local</email>
+  </user>
+  <user>
+    <id>4</id>
+    <name>Test User</name>
+    <email>test-user@example.local</email>
+    <role>User</role>
+    <password>$2y$10$bWHL5/5VlK.gnJfqlas/Tu2KNhM2ZM8S4bpcXWmO40K7cnpF9Blw.</password>
+  </user>
+</users>

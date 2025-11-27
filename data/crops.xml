@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<crops>
+  <crop>
+    <id>1</id>
+    <name>Tomatoes</name>
+    <variety>Cherry</variety>
+    <yield>15kg</yield>
+  </crop>
+  <crop>
+    <id>2</id>
+    <name>Lettuce</name>
+    <variety>Romaine</variety>
+    <yield>8kg</yield>
+  </crop>
+</crops>

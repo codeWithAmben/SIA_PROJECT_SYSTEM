@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animals>
+  <animal>
+    <id>1</id>
+    <name>Betty</name>
+    <species>Cow</species>
+    <age>5</age>
+  </animal>
+  <animal>
+    <id>2</id>
+    <name>Cluck</name>
+    <species>Chicken</species>
+    <age>1</age>
+  </animal>
+</animals>
