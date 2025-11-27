@@ -1,6 +1,6 @@
 <?php
 // php/user-login.php -- simple user login (non-admin)
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/csrf.php';
 header('Content-Type: application/json; charset=utf-8');
 // Prepare AJAX detection and return before csrf check

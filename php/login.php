@@ -1,6 +1,6 @@
 <?php
 // Deprecated: redirect to unified index login modal
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 $return = isset($_POST['return']) ? $_POST['return'] : (isset($_GET['return']) ? $_GET['return'] : '../index.php');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // still accept POST but redirect back to index with auth modal open

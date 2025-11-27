@@ -1,7 +1,7 @@
 <?php
 // php/register.php
 // Basic registration endpoint: POST name, email, password, role (optional)
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/csrf.php';
 header('Content-Type: application/json; charset=utf-8');
 $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';

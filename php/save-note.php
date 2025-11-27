@@ -1,7 +1,7 @@
 <?php
 // Simple wrapper to allow saving notes via POST using save-entity.php logic
 $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/csrf.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !csrf_verify_request()) {
     if ($isAjax) { header('Content-Type: application/json; charset=utf-8'); http_response_code(403); echo json_encode(['error' => 'Invalid CSRF token']); exit; }
