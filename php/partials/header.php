@@ -9,7 +9,7 @@ $isIndex = basename($script) === 'index.php';
 $userName = isset($_SESSION['user']) ? htmlspecialchars($_SESSION['user']['name']) : null;
 $isAdmin = isset($_SESSION['admin_logged']) && $_SESSION['admin_logged'] === true;
 ?>
-<nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-md">
+<nav class="glass-header fixed w-full z-50" aria-label="Main Navigation">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
             <div class="flex-shrink-0 flex items-center gap-2">

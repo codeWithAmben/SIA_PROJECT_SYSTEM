@@ -53,12 +53,12 @@
     <?php include __DIR__ . '/php/partials/header.php'; ?>
 
     <!-- Hero Section -->
-    <section id="home" class="pt-32 pb-20 px-4 bg-white/80 backdrop-blur-sm">
-        <div class="max-w-5xl mx-auto text-center">
-            <h1 class="font-montserrat font-bold text-4xl md:text-6xl text-farm-dark mb-6">
+    <section id="home" class="pt-32 pb-20 px-4 hero-section">
+        <div class="max-w-5xl mx-auto text-center hero-inner">
+            <h1 class="font-montserrat font-bold text-4xl md:text-6xl text-white mb-6">
                 Manage Your Farm with <br> <span class="text-green-600">Smart Farm</span>
             </h1>
-            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p class="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
                 A simple, secure, and lightweight farm management system.
             <div class="flex justify-center gap-4">
                 <a href="#map" class="bg-farm-dark text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:bg-green-800 transition">
